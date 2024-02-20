@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/*public class bruteForce {
+public class bruteForce {
     public static void main(String[] args) {
         List<Asset> assets = new ArrayList<>();
         double totalInvestment = 0; // Change to double
@@ -118,9 +118,9 @@ import java.util.Scanner;
         }
         return sum;
     }
-}*/
+}
 
-public class bruteForce {
+/*public class bruteForce {
 
     public static void main(String[] args) {
         List<Asset> assets = new ArrayList<>();
@@ -185,7 +185,7 @@ public class bruteForce {
     }
 
 
-
+/* 
     public static List<double[]> generateAllocations(double totalInvestment, int numAssets) {
         List<double[]> allocations = new ArrayList<>();
         generateAllocationsHelper(totalInvestment, numAssets, new double[numAssets], allocations, 0);
@@ -204,13 +204,30 @@ public class bruteForce {
             generateAllocationsHelper(totalInvestment - i, numAssets, currentAllocation, allocations, index + 1);
         }
     }*/
-    public static void bruteForcePortfolioOptimization(List<Asset> assets, double totalInvestment, double riskTolerance) {
+    
+    /*public static void bruteForcePortfolioOptimization(List<Asset> assets, double totalInvestment, double riskTolerance) {
         int n = assets.size();
         double maxReturn = 0;
         double[] bestAllocation = new double[n];
         double[] currentAllocation = new double[n];
     
+        // Call generateAllocations with additional parameters required for recursion
+        generateAllocations(assets, totalInvestment, n, currentAllocation, 0, riskTolerance, 0, maxReturn, bestAllocation);
+    
+        if (maxReturn > 0) {
+            System.out.println("Optimal Allocation:");
+            for (int i = 0; i < n; i++) {
+                System.out.println(assets.get(i).getId() + ": " + bestAllocation[i] + " units");
+            }
+            System.out.println("Expected Portfolio Return: " + maxReturn);
+            System.out.println("Portfolio Risk Level: " + calculatePortfolioRisk(assets, bestAllocation));
+        } else {
+            System.out.println("No valid allocation found within risk tolerance.");
+        }
+    }
+    
         // Generate all possible allocations of assets
+       
         public static void generateAllocations(List<Asset> assets, double totalInvestment, int n, double[] currentAllocation, int index,
         double riskTolerance, double currentRisk, double maxReturn, double[] bestAllocation) {
 if (index == n) {
@@ -267,6 +284,6 @@ index + 1, riskTolerance, newRisk, maxReturn, bestAllocation);
         }
         return sum;
     }
-}
+}*/
 
 
