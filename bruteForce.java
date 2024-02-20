@@ -165,7 +165,7 @@ public class bruteForce {
         double minRisk = Double.MAX_VALUE;
 
         // Generate all possible distributions of assets
-        List<double[]> allocations = generateAllocations(totalInvestment, assets);
+        List<double[]> allocations = generateAllocations(totalInvestment, n);
 
         // Iterate through all allocations
         for (double[] allocation : allocations) {
@@ -194,7 +194,7 @@ public class bruteForce {
     }
     
 
-   /*  public static List<double[]> generateAllocations(double totalInvestment, int numAssets) {
+     public static List<double[]> generateAllocations(double totalInvestment, int numAssets) {
         List<double[]> allocations = new ArrayList<>();
         generateAllocationsHelper(totalInvestment, numAssets, new double[numAssets], allocations, 0);
         return allocations;
@@ -211,37 +211,11 @@ public class bruteForce {
             currentAllocation[index] = i;
             generateAllocationsHelper(totalInvestment - i, numAssets, currentAllocation, allocations, index + 1);
         }
-    }*/
-public static List<double[]> generateAllocations(double totalInvestment, List<Asset> assets) {
-    List<double[]> allocations = new ArrayList<>();
-    generateAllocationsHelper(totalInvestment, assets, allocations);
-    return allocations;
-}
-
-
-private static void generateAllocationsHelper(double totalInvestment, List<Asset> assets, List<double[]> allocations) {
-    int[] indices = new int[assets.size()];
-    double[] currentAllocation = new double[assets.size()];
-    while (true) {
-        double sum = 0;
-        for (int i = 0; i < indices.length; i++) {
-            currentAllocation[i] = indices[i];
-            sum += indices[i];
-        }
-        if (sum <= totalInvestment) {
-            allocations.add(Arrays.copyOf(currentAllocation, currentAllocation.length));
-        }
-        int incrementIndex = indices.length - 1;
-        while (incrementIndex >= 0 && ++indices[incrementIndex] > assets.get(incrementIndex).quantity) {
-            indices[incrementIndex] = 0;
-            incrementIndex--;
-        }
-        if (incrementIndex < 0) {
-            break;
-        }
     }
-}
-
+    
+    
+    
+    
     public static double calculatePortfolioRisk(List<Asset> assets, double[] allocation) {
         double totalRisk = 0;
         for (int i = 0; i < assets.size(); i++)
