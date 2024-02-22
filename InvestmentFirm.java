@@ -9,22 +9,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AssetAllocation {
+public class InvestmentFirm {
 
-    // Asset class representing individual assets
+    // Asset class for each asset
     private static class Asset {
         String id;
         double expectedReturn;
-        double risk;
-        double availableUnits;
+        double individualrisk;
+        double units;
 
-        public Asset(String id, double expectedReturn, double risk, double availableUnits) {
+        public Asset(String id, double expectedReturn, double risk, double units) {
             this.id = id;
             this.expectedReturn = expectedReturn;
-            this.risk = risk;
-            this.availableUnits = availableUnits;
+            this.individualrisk = risk;
+            this.units = units;
         }
     }
+
+    // Portfolio class representing each client
+    private static class Portfolio {
+        double[] allocation; // Percentage how much of each asset in total investment
+        double expectedReturn;
+        double risk;
+
+    public Portfolio(int asset1, int asset2, int asset3) {
+        allocation = new double[3];
+        allocation[0] = asset1 / 100.0;
+        allocation[1] = asset2 / 100.0;
+        allocation[2] = asset3 / 100.0;
+    }
+
+    // Check if sum of allocation percents add up to 100 
+    public boolean isValid(double totalInvestment) {
+        double sum = 0.0;
+        for (int i = 0; i < allocation.length; i++) {
+            sum += allocation[i];
+        }
+        return Math.abs(sum - 1.0) < 0.000001;//As long as the absolute difference is less than 0.000001, the weight sum is considered valid. 
+    }
+
+    public void calculatePortfolioEfficiency(List<Asset> assets) {
+        expectedReturn = 0.0;
+        risk = 0.0;
+        for (int i = 0; i < assets.size(); i++) {
+            expectedReturn += allocation[i] * assets.get(i).expectedReturn; //return of each asset in portfolio allocation
+            risk += allocation[i] * assets.get(i).individualrisk; //risk of each asset in portfolio allocation
+        }
+    }
+}
 
     // Main method
     public static void main(String[] args) throws IOException {
@@ -61,40 +93,39 @@ public class AssetAllocation {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //Find optimal allocation
+        
         Portfolio optimalPortfolio = findOptimalAllocation(assets, totalInvestment, riskTolerance);
 
-        // Print results
+        // Print solution
         System.out.println("Optimal Allocation:");
         for (int i = 0; i < assets.size(); i++) {
-            System.out.printf("%s: %.2f units (%f%% of investment)\n",
+            System.out.printf("%s: %.0f units (%.0f%% of investment)\n",
                     assets.get(i).id, optimalPortfolio.allocation[i] * totalInvestment,
                     optimalPortfolio.allocation[i] * 100);
         }
         System.out.printf("Expected Portfolio Return: %.4f\n", optimalPortfolio.expectedReturn);
         System.out.printf("Portfolio Risk Level: %.4f\n", optimalPortfolio.risk);
-    }
-        
-    //end main
+
+    }//end main
     
 
     // Find optimal allocation with brute force
     private static Portfolio findOptimalAllocation(List<Asset> assets, double totalInvestment, double riskTolerance) {
         Portfolio optimalPortfolio = null;
-        double maxReturn = Double.NEGATIVE_INFINITY;
+        double maxReturn = 0;
 
         // Loop through all possible allocations
-        for (int i = 0; i <= 100; i++) { // Adjust upper bound based on asset count
-            for (int j = 0; j <= 100 - i; j++) { // Adjust upper bound based on remaining assets
-                int remaining = 100 - i - j;
+        for (int i = 0; i <= 100; i++) {         //0%-->100%
+            for (int j = 0; j <= 100 - i; j++) { // 0%-->100-i%
+                int remaining = 100 - i - j;     //remaining%
                 Portfolio portfolio = new Portfolio(i, j, remaining);
 
-                // Check if allocation is valid
-                if (portfolio.isValid(totalInvestment)) {
-                    // Calculate portfolio return and risk
-                    portfolio.calculatePortfolioMetrics(assets);
+                 
+                if (portfolio.isValid(totalInvestment)) { // Check if allocation exactly use 100% of totalInvestment
+                    
+                    portfolio.calculatePortfolioEfficiency(assets);// Calculate portfolio return and risk
 
-                    // Check if risk is within tolerance and return is higher than best so far
+                    // Check if risk is within tolerance and return is higher than best so far and update when a new optimal allocation is found
                     if (portfolio.risk <= riskTolerance && portfolio.expectedReturn > maxReturn) {
                         maxReturn = portfolio.expectedReturn;
                         optimalPortfolio = portfolio;
@@ -106,36 +137,6 @@ public class AssetAllocation {
         return optimalPortfolio;
     }
 
-    // Portfolio class representing allocation and metrics
-    private static class Portfolio {
-        double[] allocation; // Percentage invested in each asset
-        double expectedReturn;
-        double risk;
-
-        public Portfolio(int asset1, int asset2, int asset3) {
-            allocation = new double[3];
-            allocation[0] = asset1 / 100.0;
-            allocation[1] = asset2 / 100.0;
-            allocation[2] = asset3 / 100.0;
-        }
-
-        // Check if allocation is valid (all weights add up to 100%)
-        public boolean isValid(double totalInvestment) {
-            double sum = 0.0;
-            for (double weight : allocation) {
-                sum += weight;
-            }
-            return Math.abs(sum - 1.0) < 1e-6;
-        }
-
-        // Calculate portfolio expected return and risk based on asset allocations
-        public void calculatePortfolioMetrics(List<Asset> assets) {
-            expectedReturn = 0.0;
-            risk = 0.0;
-            for (int i = 0; i < assets.size(); i++) {
-                expectedReturn += allocation[i] * assets.get(i).expectedReturn;
-                risk += allocation[i] * assets.get(i).risk;
-            }
-        }
-    }
+    
+     
 }
