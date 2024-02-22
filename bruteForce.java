@@ -650,7 +650,7 @@ public class bruteForce {
 public class bruteForce {
     public static void main(String[] args) {
         List<Asset> assets = new ArrayList<>();
-        double totalInvestment = 0; // Change to double
+        double totalInvestment = 1000; // Change to double
         double riskTolerance = 0;
 
         Scanner scanner = new Scanner(System.in);
@@ -726,10 +726,12 @@ public class bruteForce {
             return;
         }
 
-        for (int i = 0; i <= totalInvestment && index < numAssets ; i++) {
-            currentAllocation[index] = i;
-            generateAllocationsHelper(totalInvestment - i, numAssets, currentAllocation, allocations, index + 1);
-        }
+
+    for (int i = 0; i <= totalInvestment - sum(currentAllocation); i++) {
+           currentAllocation[index] = i;
+           generateAllocationsHelper(totalInvestment, numAssets, currentAllocation, allocations, index + 1);
+}
+           
     }
 
     public static double calculatePortfolioRisk(List<Asset> assets, double[] allocation) {
